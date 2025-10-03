@@ -2,25 +2,49 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Interactive Space Habitat</title>
-<link rel="stylesheet" href="style.css">
+<title>Layered Mars Habitat</title>
 <style>
   body { margin: 0; overflow: hidden; }
   #info {
-    position: absolute; top: 10px; left: 10px; background: rgba(255,255,255,0.8);
-    padding: 10px; font-family: Arial; border-radius: 5px;
+    position: absolute;
+    top: 10px; left: 10px;
+    background: rgba(255,255,255,0.8);
+    padding: 10px;
+    font-family: Arial;
+    border-radius: 5px;
+    z-index: 10;
+  }
+  /* --- CORRECTED CSS FOR THE BUTTON --- */
+  #viewToggle {
+    /* Removed: position, top, left */
+    margin-top: 15px; /* Added margin for spacing */
+    width: 100%;      /* Make the button fill the box */
+    padding: 8px 12px;
+    font-family: Arial;
+    font-size: 14px;
+    border-radius: 5px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    z-index: 10;
+  }
+  #viewToggle:hover {
+    background-color: #0056b3;
   }
 </style>
 </head>
 <body>
-<div id="info">
-  <h3>Habitat Layout - 4 Crew Members</h3>
-  <p>Drag zones to arrange functional areas inside the habitat.</p>
-  <p id="volumeInfo"></p>
-</div>
+    <div id="info">
+      <h3>Layered Mars Habitat Concept</h3>
+      <p>Outer shell for protection, inner for living.</p>
+      <p>Using Aerogel, Kapton, Regolith, and Composites.</p>
+      <button id="viewToggle">Toggle Transparent View</button>
+    </div>
 
-<script src="https://cdn.jsdelivr.net/npm/three@0.153.0/build/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.153.0/examples/js/controls/OrbitControls.js"></script>
-<script src="script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    
+    <script src="script.js"></script>
 </body>
 </html>
