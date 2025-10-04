@@ -279,6 +279,11 @@ function init() {
         color: 0x111111,
         roughness: 0.2
     });
+    // *** NEW MATERIAL FOR DATA CABLES ***
+    const dataCableMaterial = new THREE.MeshStandardMaterial({
+        color: 0x203050, // A dark blue for data wiring
+        roughness: 0.6
+    });
     const deskTopGeom = new THREE.BoxGeometry(1.0, 0.04, 0.5);
     const deskLegGeom = new THREE.BoxGeometry(0.05, 0.7, 0.05);
     const screenGeom = new THREE.BoxGeometry(0.7, 0.4, 0.02);
@@ -370,6 +375,29 @@ function init() {
         }
         mainLevel.add(computerGroup);
 
+        // --- START: ADDED Computer Data Cable to LSS ---
+        const cableStartPos = new THREE.Vector3();
+        computerGroup.getWorldPosition(cableStartPos);
+        cableStartPos.y += 0.65; // Start from just below the desk surface
+
+        // Target a point on the LSS core at the same height
+        const cableEndPos = new THREE.Vector3(
+            Math.cos(deskAngle) * (lssRadius + 0.05),
+            cableStartPos.y,
+            Math.sin(deskAngle) * (lssRadius + 0.05)
+        );
+
+        // Create a sagging curve
+        const cableMidPos = cableStartPos.clone().lerp(cableEndPos, 0.5);
+        cableMidPos.y -= 0.4;
+
+        const cableCurve = new THREE.QuadraticBezierCurve3(cableStartPos, cableMidPos, cableEndPos);
+        const cableGeom = new THREE.TubeGeometry(cableCurve, 20, 0.02, 8, false);
+        const dataCable = new THREE.Mesh(cableGeom, dataCableMaterial);
+        scene.add(dataCable); // Add directly to the scene
+        // --- END: ADDED Computer Data Cable to LSS ---
+
+
         const filtrationUnitGeom = new THREE.BoxGeometry(0.6, 0.8, 0.6);
         const filtrationUnit = new THREE.Mesh(filtrationUnitGeom, filterMaterial);
         const filterRadius = innerRad + 0.3;
@@ -428,7 +456,6 @@ function init() {
     upperFloor.rotation.x = -Math.PI / 2;
     upperLevel.add(upperFloor);
 
-    // --- START: CORRECTED SECTION FOR DOORS ---
     const numUpperPartitions = 3;
     const upperWallThickness = 0.1;
     const upperWallMaterial = new THREE.MeshStandardMaterial({
@@ -508,8 +535,23 @@ function init() {
         wall.rotation.y = -angle + Math.PI / 2;
 
         upperLevel.add(wall);
+
+        // --- START: ADDED AC UNIT TO EACH UPPER SECTION ---
+        const sectorAngle = Math.PI * 2 / numUpperPartitions;
+        const acAngle = angle + sectorAngle / 2;
+        const acRadius = innerRad + 0.4 / 2; // 0.4 is the depth of the AC unit
+        const acYPosition = upperLevelCeilingY - (0.3 / 2) - 0.1; // 0.3 is height
+
+        const upperAcUnit = new THREE.Mesh(acGeom, acMaterial);
+        upperAcUnit.position.set(
+            Math.cos(acAngle) * acRadius,
+            acYPosition,
+            Math.sin(acAngle) * acRadius
+        );
+        upperAcUnit.rotation.y = -acAngle;
+        upperLevel.add(upperAcUnit);
+        // --- END: ADDED AC UNIT TO EACH UPPER SECTION ---
     }
-    // --- END: CORRECTED SECTION FOR DOORS ---
 
 
     // --- Create Zones in the Upper Level ---
@@ -639,6 +681,27 @@ function init() {
     ecgGroup.position.set(Math.cos(ecgAngle) * medBayRadiusInner, upperLevelYFloor, Math.sin(ecgAngle) * medBayRadiusInner);
     ecgGroup.rotation.y = -ecgAngle;
     upperLevel.add(ecgGroup);
+
+    // --- START: ADDED Medical Equipment Data Cable to LSS ---
+    const medCableStartPos = new THREE.Vector3();
+    ecgGroup.getWorldPosition(medCableStartPos);
+    medCableStartPos.y += 0.4; // Start from the back of the main box unit
+
+    const medCableEndPos = new THREE.Vector3(
+        Math.cos(ecgAngle) * (lssRadius + 0.05),
+        medCableStartPos.y,
+        Math.sin(ecgAngle) * (lssRadius + 0.05)
+    );
+
+    // Create a slightly upward curving cable
+    const medCableMidPos = medCableStartPos.clone().lerp(medCableEndPos, 0.5);
+    medCableMidPos.y += 0.3;
+
+    const medCableCurve = new THREE.QuadraticBezierCurve3(medCableStartPos, medCableMidPos, medCableEndPos);
+    const medCableGeom = new THREE.TubeGeometry(medCableCurve, 20, 0.025, 8, false);
+    const medDataCable = new THREE.Mesh(medCableGeom, dataCableMaterial);
+    scene.add(medDataCable);
+    // --- END: ADDED Medical Equipment Data Cable to LSS ---
 
     // 3. Medical Supply Cabinet
     const cabinet = new THREE.Mesh(new THREE.BoxGeometry(0.8, 1.5, 0.4), cabinetMaterial);
