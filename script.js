@@ -364,6 +364,10 @@ function init() {
         const deskGroupRadius = outerRad - 0.5 / 2 - 0.2;
         computerGroup.position.set(Math.cos(deskAngle) * deskGroupRadius, -compartmentHeight / 2, Math.sin(deskAngle) * deskGroupRadius);
         computerGroup.rotation.y = -deskAngle;
+        // Give the first computer a name so we can find it later for the antenna wire
+        if (i === 0) {
+            computerGroup.name = "targetComputer";
+        }
         mainLevel.add(computerGroup);
 
         const filtrationUnitGeom = new THREE.BoxGeometry(0.6, 0.8, 0.6);
@@ -644,92 +648,92 @@ function init() {
     upperLevel.add(cabinet);
 
     // --- Zone 4: Galley (Kitchen) ---
-    const counterMaterial = new THREE.MeshStandardMaterial({
-        color: 0x555555,
-        metalness: 0.7,
-        roughness: 0.4
-    });
-    const kitchenCabinetMaterial = new THREE.MeshStandardMaterial({
-        color: 0xbbbbbb,
-        roughness: 0.6
-    });
-    const crateMaterial = new THREE.MeshStandardMaterial({
-        color: 0x8B5A2B, // A brownish color for the crate
-        roughness: 0.8
-    });
+    const counterMaterial = new THREE.MeshStandardMaterial({
+        color: 0x555555,
+        metalness: 0.7,
+        roughness: 0.4
+    });
+    const kitchenCabinetMaterial = new THREE.MeshStandardMaterial({
+        color: 0xbbbbbb,
+        roughness: 0.6
+    });
+    const crateMaterial = new THREE.MeshStandardMaterial({
+        color: 0x8B5A2B, // A brownish color for the crate
+        roughness: 0.8
+    });
 
-    const kitchenAngle = Math.PI; // 180 degrees, in the second, previously empty sector
-    const kitchenGroup = new THREE.Group();
+    const kitchenAngle = Math.PI; // 180 degrees, in the second, previously empty sector
+    const kitchenGroup = new THREE.Group();
 
-    // Define dimensions
-    const counterWidth = 2.6;
-    const counterDepth = 0.6;
-    const counterHeight = 0.9;
+    // Define dimensions
+    const counterWidth = 2.6;
+    const counterDepth = 0.6;
+    const counterHeight = 0.9;
 
-    // 1. Create a counter-top and cabinets as a single unit
-    // Base/Lower Cabinets
-    const lowerCabinetGeom = new THREE.BoxGeometry(counterWidth, counterHeight, counterDepth);
-    const lowerCabinets = new THREE.Mesh(lowerCabinetGeom, kitchenCabinetMaterial);
-    lowerCabinets.position.y = counterHeight / 2;
-    kitchenGroup.add(lowerCabinets);
+    // 1. Create a counter-top and cabinets as a single unit
+    // Base/Lower Cabinets
+    const lowerCabinetGeom = new THREE.BoxGeometry(counterWidth, counterHeight, counterDepth);
+    const lowerCabinets = new THREE.Mesh(lowerCabinetGeom, kitchenCabinetMaterial);
+    lowerCabinets.position.y = counterHeight / 2;
+    kitchenGroup.add(lowerCabinets);
 
-    // Counter Top Surface
-    const counterTopGeom = new THREE.BoxGeometry(counterWidth, 0.05, counterDepth);
-    const counterTop = new THREE.Mesh(counterTopGeom, counterMaterial);
-    counterTop.position.y = counterHeight + 0.025;
-    kitchenGroup.add(counterTop);
+    // Counter Top Surface
+    const counterTopGeom = new THREE.BoxGeometry(counterWidth, 0.05, counterDepth);
+    const counterTop = new THREE.Mesh(counterTopGeom, counterMaterial);
+    counterTop.position.y = counterHeight + 0.025;
+    kitchenGroup.add(counterTop);
 
-    // Upper Cabinets
-    const upperCabinetGeom = new THREE.BoxGeometry(counterWidth, 0.6, 0.4);
-    const upperCabinets = new THREE.Mesh(upperCabinetGeom, kitchenCabinetMaterial);
-    upperCabinets.position.y = counterHeight + 0.05 + 0.6 + (0.6 / 2);
-    upperCabinets.position.z = - (counterDepth / 2) + (0.4 / 2);
-    kitchenGroup.add(upperCabinets);
+    // Upper Cabinets
+    const upperCabinetGeom = new THREE.BoxGeometry(counterWidth, 0.6, 0.4);
+    const upperCabinets = new THREE.Mesh(upperCabinetGeom, kitchenCabinetMaterial);
+    upperCabinets.position.y = counterHeight + 0.05 + 0.6 + (0.6 / 2);
+    upperCabinets.position.z = - (counterDepth / 2) + (0.4 / 2);
+    kitchenGroup.add(upperCabinets);
 
-    // 2. Appliances (positions are local to the kitchenGroup)
-    // Sink
-    const sinkGeom = new THREE.BoxGeometry(0.5, 0.2, 0.4);
-    const sinkMaterial = new THREE.MeshStandardMaterial({ color: 0x111111, metalness: 0.8 });
-    const sink = new THREE.Mesh(sinkGeom, sinkMaterial);
-    sink.position.set(-0.7, counterHeight, 0); // x, y, z
-    kitchenGroup.add(sink);
+    // 2. Appliances (positions are local to the kitchenGroup)
+    // Sink
+    const sinkGeom = new THREE.BoxGeometry(0.5, 0.2, 0.4);
+    const sinkMaterial = new THREE.MeshStandardMaterial({ color: 0x111111, metalness: 0.8 });
+    const sink = new THREE.Mesh(sinkGeom, sinkMaterial);
+    sink.position.set(-0.7, counterHeight, 0); // x, y, z
+    kitchenGroup.add(sink);
 
-    // Faucet
-    const faucetGeom = new THREE.CylinderGeometry(0.03, 0.03, 0.2, 12);
-    const faucet = new THREE.Mesh(faucetGeom, counterMaterial);
-    faucet.position.set(-0.7, counterHeight + 0.15, -0.15);
-    kitchenGroup.add(faucet);
+    // Faucet
+    const faucetGeom = new THREE.CylinderGeometry(0.03, 0.03, 0.2, 12);
+    const faucet = new THREE.Mesh(faucetGeom, counterMaterial);
+    faucet.position.set(-0.7, counterHeight + 0.15, -0.15);
+    kitchenGroup.add(faucet);
 
-    // Microwave / Food Rehydrator
-    const microGeom = new THREE.BoxGeometry(0.6, 0.35, 0.38);
-    const microwave = new THREE.Mesh(microGeom, kitchenCabinetMaterial);
-    microwave.position.set(0.7, counterHeight + 0.05 + (0.35 / 2), 0);
-    kitchenGroup.add(microwave);
+    // Microwave / Food Rehydrator
+    const microGeom = new THREE.BoxGeometry(0.6, 0.35, 0.38);
+    const microwave = new THREE.Mesh(microGeom, kitchenCabinetMaterial);
+    microwave.position.set(0.7, counterHeight + 0.05 + (0.35 / 2), 0);
+    kitchenGroup.add(microwave);
 
-    // Position and rotate the entire kitchen group
+    // Position and rotate the entire kitchen group
     // MODIFIED: The radius is now calculated based on the rotated unit's width.
-    const kitchenRadius = r_upper_floor - counterWidth / 1.5 - 0.2; 
-    kitchenGroup.position.set(
-        Math.cos(kitchenAngle) * kitchenRadius,
-        upperLevelYFloor,
-        Math.sin(kitchenAngle) * kitchenRadius
-    );
+    const kitchenRadius = r_upper_floor - counterWidth / 1.5 - 0.2;
+    kitchenGroup.position.set(
+        Math.cos(kitchenAngle) * kitchenRadius,
+        upperLevelYFloor,
+        Math.sin(kitchenAngle) * kitchenRadius
+    );
     // MODIFIED: Added a 90-degree (Math.PI / 2) rotation.
-    kitchenGroup.rotation.y = -kitchenAngle + Math.PI / 2;
-    upperLevel.add(kitchenGroup);
+    kitchenGroup.rotation.y = -kitchenAngle + Math.PI / 2;
+    upperLevel.add(kitchenGroup);
 
-    // Add the extra cuboid storage box
-    const crateGeom = new THREE.BoxGeometry(0.6, 0.6, 0.6);
-    const crate = new THREE.Mesh(crateGeom, crateMaterial);
-    const crateAngle = kitchenAngle + 0.9;
-    const crateRadius = r_upper_floor - 1.5;
-    crate.position.set(
-        Math.cos(crateAngle) * crateRadius,
-        upperLevelYFloor + 0.3,
-        Math.sin(crateAngle) * crateRadius
-    );
-    crate.rotation.y = -crateAngle;
-    upperLevel.add(crate);
+    // Add the extra cuboid storage box
+    const crateGeom = new THREE.BoxGeometry(0.6, 0.6, 0.6);
+    const crate = new THREE.Mesh(crateGeom, crateMaterial);
+    const crateAngle = kitchenAngle + 0.9;
+    const crateRadius = r_upper_floor - 1.5;
+    crate.position.set(
+        Math.cos(crateAngle) * crateRadius,
+        upperLevelYFloor + 0.3,
+        Math.sin(crateAngle) * crateRadius
+    );
+    crate.rotation.y = -crateAngle;
+    upperLevel.add(crate);
 
 
     scene.add(upperLevel);
@@ -741,7 +745,7 @@ function init() {
     const techLevelHeight = 1.75;
     const techLevelYCeiling = -compartmentHeight / 2;
     const techLevelYCenter = techLevelYCeiling - techLevelHeight / 2;
-    const techLevelYFloor = techLevelYCeiling - techLevelHeight;
+    const techLevelYFloor_val = techLevelYCeiling - techLevelHeight;
     const techInnerRad = lssRadius;
 
     // Materials
@@ -781,12 +785,12 @@ function init() {
     });
 
 
-    const r_tech_floor = Math.sqrt(innerHabitatRadius ** 2 - techLevelYFloor ** 2);
+    const r_tech_floor = Math.sqrt(innerHabitatRadius ** 2 - techLevelYFloor_val ** 2);
     const techRingGeometry = new THREE.RingGeometry(techInnerRad, r_tech_floor, 64);
 
     const techFloor = new THREE.Mesh(techRingGeometry, techCompartmentMaterial);
     techFloor.rotation.x = -Math.PI / 2;
-    techFloor.position.y = techLevelYFloor;
+    techFloor.position.y = techLevelYFloor_val;
     lowerLevel.add(techFloor);
 
     const techInnerWallGeom = new THREE.CylinderGeometry(techInnerRad, techInnerRad, techLevelHeight, 64, 1, true);
@@ -827,7 +831,7 @@ function init() {
             chamberTank = new THREE.Mesh(tankGeom, tankMaterialStorage);
         }
 
-        chamberTank.position.set(Math.cos(contentAngle) * contentRadius, techLevelYFloor + tankHeight / 2 + 0.1, Math.sin(contentAngle) * contentRadius);
+        chamberTank.position.set(Math.cos(contentAngle) * contentRadius, techLevelYFloor_val + tankHeight / 2 + 0.1, Math.sin(contentAngle) * contentRadius);
         chamberTank.rotation.y = -contentAngle;
         lowerLevel.add(chamberTank);
         tankPositions.push(chamberTank.position.clone());
@@ -835,7 +839,7 @@ function init() {
         const pumpAngle = angle + sectorAngle * 0.8;
         const pumpRadius = contentRadius - 0.5;
         const pump = new THREE.Mesh(pumpGeom, pumpMaterial);
-        pump.position.set(Math.cos(pumpAngle) * pumpRadius, techLevelYFloor + 0.25, Math.sin(pumpAngle) * pumpRadius);
+        pump.position.set(Math.cos(pumpAngle) * pumpRadius, techLevelYFloor_val + 0.25, Math.sin(pumpAngle) * pumpRadius);
         pump.rotation.y = -pumpAngle;
         lowerLevel.add(pump);
         pumpPositions.push(pump.position.clone());
@@ -874,7 +878,7 @@ function init() {
         const endPoint1 = pumpPositions[i].clone();
 
         const midPoint1 = startPoint1.clone().lerp(endPoint1, 0.5);
-        midPoint1.y = techLevelYFloor + 0.1;
+        midPoint1.y = techLevelYFloor_val + 0.1;
 
         const pipeCurve1 = new THREE.QuadraticBezierCurve3(startPoint1, midPoint1, endPoint1);
         const pipeGeom1 = new THREE.TubeGeometry(pipeCurve1, 20, lowerPipeRadius, 8, false);
@@ -886,7 +890,7 @@ function init() {
         endPoint2.y -= tankHeight / 2 - 0.35;
 
         const midPoint2 = startPoint2.clone().lerp(endPoint2, 0.5);
-        midPoint2.y = techLevelYFloor + 0.15;
+        midPoint2.y = techLevelYFloor_val + 0.15;
         midPoint2.multiplyScalar(1.05);
 
         const pipeCurve2 = new THREE.QuadraticBezierCurve3(startPoint2, midPoint2, endPoint2);
@@ -972,7 +976,7 @@ function init() {
     // Calculate the vertical angles (phi) for the spherical segment
     // Phi=0 is top pole, Phi=PI is bottom pole.
     // We use acos(y / radius) to find the angle for a given height.
-    const phiStart = Math.acos(techLevelYFloor / innerHabitatRadius);
+    const phiStart = Math.acos(techLevelYFloor_val / innerHabitatRadius);
     const phiEnd = Math.acos(skirtAttachY / innerHabitatRadius);
     const phiLength = phiEnd - phiStart;
 
@@ -1008,7 +1012,7 @@ function init() {
 
     // Position the door on the spherical insulation layer
     const airlockWallRadius = innerHabitatRadius - 0.05 + 0.01; // Just outside the gold foil layer
-    const doorCenterY = (techLevelYFloor + skirtAttachY) / 2; // Vertically centered on the insulation band
+    const doorCenterY = (techLevelYFloor_val + skirtAttachY) / 2; // Vertically centered on the insulation band
 
     // Check if the Y position is valid for the given sphere radius
     if (airlockWallRadius ** 2 > doorCenterY ** 2) {
@@ -1286,7 +1290,7 @@ function init() {
     lowerHatchOutline.rotation.x = Math.PI / 2;
     scene.add(lowerHatchOutline);
 
-    const ladderHeight = techLevelYCeiling - techLevelYFloor;
+    const ladderHeight = techLevelYCeiling - techLevelYFloor_val;
     const ropeRadius = 0.03;
     const ropeGeom = new THREE.CylinderGeometry(ropeRadius, ropeRadius, ladderHeight, 8);
     const ropeMaterial = new THREE.MeshStandardMaterial({
@@ -1468,13 +1472,49 @@ function init() {
     // 4. Internal Power Trunk from Power Unit up to the LSS Core
     const trunkStart = mainCabinet.position.clone().add(powerUnit.position);
     trunkStart.y += 0.6; // Top of the cabinet
-    const trunkEnd = new THREE.Vector3(0, techLevelYFloor, lssRadius); // Connect to base of LSS on tech floor
+    const trunkEnd = new THREE.Vector3(0, techLevelYFloor_val, lssRadius); // Connect to base of LSS on tech floor
     const trunkMid = trunkStart.clone().lerp(trunkEnd, 0.5);
     trunkMid.z += 1.5;
 
     const trunkCurve = new THREE.QuadraticBezierCurve3(trunkStart, trunkMid, trunkEnd);
     const mainTrunk = new THREE.Mesh(new THREE.TubeGeometry(trunkCurve, 20, 0.15, 12, false), conduitMaterial);
     electricalGroup.add(mainTrunk);
+
+    // --- START: V-Shaped Antenna ---
+    const commsGroup = new THREE.Group();
+    scene.add(commsGroup);
+
+    const antennaMaterial = new THREE.MeshStandardMaterial({
+        color: 0xdddddd, // A light grey/white color
+        metalness: 0.9,
+        roughness: 0.3
+    });
+
+    // 1. Create the antenna group which will hold the two arms
+    const antenna = new THREE.Group();
+
+    // 2. Define the geometry for the arms of the "V"
+    // Using a thin cylinder for each arm
+    const armGeom = new THREE.CylinderGeometry(0.05, 0.05, 2.5, 8); // (radiusTop, radiusBottom, height, segments)
+
+    // 3. Create the first arm and rotate it
+    const arm1 = new THREE.Mesh(armGeom, antennaMaterial);
+    arm1.position.y = 1; // Move it up so the rotation origin is at the bottom
+    arm1.rotation.z = Math.PI / 8; // Rotate it 22.5 degrees to one side
+
+    // 4. Create the second arm and rotate it the other way
+    const arm2 = new THREE.Mesh(armGeom, antennaMaterial);
+    arm2.position.y = 1; // Same vertical position
+    arm2.rotation.z = -Math.PI / 8; // Rotate it -22.5 degrees to the other side
+
+    // 5. Add both arms to the main antenna group
+    antenna.add(arm1);
+    antenna.add(arm2);
+
+    // 6. Position the entire antenna at the very top of the outer shell
+    antenna.position.y = outerHabitatRadius;
+    commsGroup.add(antenna);
+    // --- END: V-Shaped Antenna ---
 
 
     // --- Martian Ground ---
