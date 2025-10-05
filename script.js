@@ -1,3 +1,4 @@
+// The codes below are both human written and AI generated. Also some part of the codes are modified with the help of AI.//
 let scene, camera, renderer, controls;
 let habitatInner, habitatOuter; // References to our two spheres
 let isTransparentView = false; // State for the view toggle
